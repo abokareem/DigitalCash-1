@@ -11,92 +11,85 @@ import sys
 import random
 import hashlib
 
-#Customer's Personal Information:
-identity = 15
-personalInformation = "Alice Cash, 1234 Fake Rd, Howell MI 48843, SSN:102-25-9853"
+#Create Entie Money Order
+def createMO(valueOfMoneyOrder): 
+    print("Computing Money Order: ", i + 1)
 
-#Request The Number of Money Orders to Generated
-numOfMoneyOrders = int(input("How many money orders should be generated?: "))
+    #Add Logic to Not Have Duplicate Unique Strings - TBD later !!!!!!!!!!!!!!!!!!!
+    uniquenessString = randomInt(100,500)
+                                                        
+    customerID = identity
+    #Base Money Order Complete
+    baseMoneyOrder = []
+    baseMoneyOrder.append(valueOfMoneyOrder)
+    baseMoneyOrder.append(uniquenessString)
+    baseMoneyOrder.append(identity)
+    #Output Base Money Order 
+    baseMOFileName = "BaseMO" + str(i+1) + ".txt"
+    writeFile(baseMOFileName,baseMoneyOrder)
 
-def main(): 
-    for i in range(numOfMoneyOrders): 
-        print("Computing Money Order: ", i + 1)
-        valueOfMoneyOrder = float(randomInt(1,500))
-                                                        #Round Value of MO to 2 decimal places 
-        uniquenessString = randomInt(100000,500000)
-                                                        #Add Logic to Not Have Duplicate Unique Strings - TBD later 
-        customerID = identity
-        #Base Money Order Complete
-        baseMoneyOrder = []
-        baseMoneyOrder.append(valueOfMoneyOrder)
-        baseMoneyOrder.append(uniquenessString)
-        baseMoneyOrder.append(identity)
-        #Output Base Money Order 
-        baseMOFileName = "BaseMO" + str(i+1) + ".txt"
-        writeFile(baseMOFileName,baseMoneyOrder)
+    #Secret Split MO Start
+    secretSplitMO = []
+    secretSplitMO.append(valueOfMoneyOrder)
+    secretSplitMO.append(uniquenessString)
+    #Secret Split Twice 
+    I11 = getSecretSplitting()  
+    I12 = getSecretSplitting() 
+    secretSplit = []
+    secretSplit.append(I11)
+    secretSplit.append(I12)
+    secretSplitMO.append(secretSplit)
+    #OutputSSMO 
+    secretSplitMOFileName = "SecretSplitMO" + str(i+1) + ".txt"
+    writeFile(secretSplitMOFileName,secretSplitMO)
+    #OutputSSN
+    secretSplitNumberMOFileName = "PRNG_SS" + str(i+1) + ".txt"
+    writeFile(secretSplitNumberMOFileName,secretSplit)
 
-        #Secret Split MO Start
-        secretSplitMO = []
-        secretSplitMO.append(valueOfMoneyOrder)
-        secretSplitMO.append(uniquenessString)
-        #Secret Split Twice 
-        I11 = getSecretSplitting()  
-        I12 = getSecretSplitting() 
-        secretSplit = []
-        secretSplit.append(I11)
-        secretSplit.append(I12)
-        secretSplitMO.append(secretSplit)
-        #OutputSSMO 
-        secretSplitMOFileName = "SecretSplitMO" + str(i+1) + ".txt"
-        writeFile(secretSplitMOFileName,secretSplitMO)
-        #OutputSSN
-        secretSplitNumberMOFileName = "PRNG_SS" + str(i+1) + ".txt"
-        writeFile(secretSplitNumberMOFileName,secretSplit)
+    #Start of Bit Commitment
+    #PRNG_BCn.txt
+    BCOutput = []
+    BCOutput =performBitCommitment(I11,I12)
+    randIntBCFileName = "PRNG_BC" + str(i+1) + ".txt"
+    writeFile(randIntBCFileName,secretSplit)
+    #BitCommitNumsn.txt
+    randIntBCFileName = "BitCommitNums" + str(i+1) + ".txt"
+    R11 = I11[0]
+    S11 = I11[1]
+    R12 = I12[0]
+    S12 = I12[1]
+    I11R = BCOutput[0]
+    I11S = BCOutput[1]
+    I12R = BCOutput[2]
+    I12S = BCOutput[3]
+    BCNUMS = []
+    BCNUMS.append([R11,I11R[0]])
+    BCNUMS.append([S11,I11S[0]])
+    BCNUMS.append([R12,I12R[0]])
+    BCNUMS.append([S12,I12S[0]])
+    writeFile(randIntBCFileName,BCNUMS)        #Is this R11 and R111?? 
+    #BitCommitMOn.txt                       #Do we want to make output into Ciphertext? Yes 
+    randIntBCFileName = "BitCommitMO" + str(i+1) + ".txt"
+    BitCommitMO = []
+    BitCommitMO.append(valueOfMoneyOrder)
+    BitCommitMO.append(uniquenessString)
+    BitCommitMO.append(I11[0])
+    BitCommitMO.append(I11[1])
+    BitCommitMO.append(I12[0])
+    BitCommitMO.append(I12[1])
+    writeFile(randIntBCFileName,BitCommitMO)
 
-        #Start of Bit Commitment
-        #PRNG_BCn.txt
-        BCOutput = []
-        BCOutput =performBitCommitment(I11,I12)
-        randIntBCFileName = "PRNG_BC" + str(i+1) + ".txt"
-        writeFile(randIntBCFileName,secretSplit)
-        #BitCommitNumsn.txt
-        randIntBCFileName = "BitCommitNums" + str(i+1) + ".txt"
-        R11 = I11[0]
-        S11 = I11[1]
-        R12 = I12[0]
-        S12 = I12[1]
-        I11R = BCOutput[0]
-        I11S = BCOutput[1]
-        I12R = BCOutput[2]
-        I12S = BCOutput[3]
-        BCNUMS = []
-        BCNUMS.append([R11,I11R[0]])
-        BCNUMS.append([S11,I11S[0]])
-        BCNUMS.append([R12,I12R[0]])
-        BCNUMS.append([S12,I12S[0]])
-        writeFile(randIntBCFileName,BCNUMS)                #Is this R11 and R111?? 
-        #BitCommitMOn.txt                                       #Do we want to make output into Ciphertext? Yes 
-        randIntBCFileName = "BitCommitMO" + str(i+1) + ".txt"
-        BitCommitMO = []
-        BitCommitMO.append(valueOfMoneyOrder)
-        BitCommitMO.append(uniquenessString)
-        BitCommitMO.append(I11[0])
-        BitCommitMO.append(I11[1])
-        BitCommitMO.append(I12[0])
-        BitCommitMO.append(I12[1])
-        writeFile(randIntBCFileName,BitCommitMO)
+    #Start Of Blinding 
+    blindedMO = blindMO(BitCommitMO)
+    #BlindedMOn.txt                      #Do we want to make output into Ciphertext? Yes 
+    blindedMOFileName = "BlindedMO" + str(i+1) + ".txt"
+    writeFile(blindedMOFileName,blindedMO)
 
-        #Start Of Blinding 
-        blindedMO = blindMO(BitCommitMO)
-        #BlindedMOn.txt                                      #Do we want to make output into Ciphertext? Yes 
-        blindedMOFileName = "BlindedMO" + str(i+1) + ".txt"
-        writeFile(blindedMOFileName,blindedMO)
-
-        #Start of Unblinding 
-        unblindedMO = unblindMO(blindedMO)
-        #UnblindedMOn.txt
-        blindedMOFileName = "UnblindedMO" + str(i+1) + ".txt"
-        writeFile(blindedMOFileName,unblindedMO)
+    #Start of Unblinding 
+    unblindedMO = unblindMO(blindedMO)
+    #UnblindedMOn.txt
+    blindedMOFileName = "UnblindedMO" + str(i+1) + ".txt"
+    writeFile(blindedMOFileName,unblindedMO)
 
 def unblindMO(MO):
      #BANK RSA KEY
@@ -105,7 +98,7 @@ def unblindMO(MO):
     bankKeyD = 59 
     unblindedMO = []
     #Value
-    unblindedMO.append(float(MO[0]) ** bankKeyD % bankKeyN) #Ciphertext number, does output have to be Characters?
+    unblindedMO.append(int(MO[0]) ** bankKeyD % bankKeyN) #Ciphertext number, does output have to be Characters?
     #Uniqueness
     unblindedMO.append(int(MO[1]) ** bankKeyD % bankKeyN) #Enhancement: Convert Numbers to Characters
     #I11R
@@ -118,15 +111,13 @@ def unblindMO(MO):
     unblindedMO.append(int(MO[5]) ** bankKeyD % bankKeyN)
     return unblindedMO
 
-
 def blindMO(MO):
-    #BANK RSA KEY
+    #BANK PUBLIC RSA KEY
     bankKeyE = 29
     bankKeyN = 571
-    bankKeyD = 59 
     blindedMO = []
-    #Value
-    blindedMO.append(float(MO[0]) ** bankKeyE % bankKeyN) #Ciphertext number, does output have to be Characters?
+    #Value of MO 
+    blindedMO.append(int(MO[0]) ** bankKeyE % bankKeyN) #Ciphertext number, does output have to be Characters?
     #Uniqueness
     blindedMO.append(int(MO[1]) ** bankKeyE % bankKeyN) #Enhancement: Convert Numbers to Characters
     #I11R
@@ -181,7 +172,6 @@ def randomNumberwithLength(length):
     lower = 10**(length-1)
     upper = 10**length - 1
     return random.randint(lower, upper)
-
     
 def writeFile(fileName,outputList):  
     outFile = open(fileName,"w")                 
@@ -193,4 +183,13 @@ def randomInt(min,max):
     randomNumber = random.randint(min,max)
     return int(randomNumber)
 
-main()
+#Request The Number of Money Orders to Generated
+identity = int(input("Please enter your ID: "))
+numOfMoneyOrders = int(input("How many money orders would you like to make today?: "))
+valueofMO = []
+for i in range(numOfMoneyOrders):
+    inputVal = int(input("What is the value of the Money Order " + str((i+1)) + "?: "))
+    valueofMO.append(inputVal)
+
+for i in range(numOfMoneyOrders):
+    createMO(valueofMO[i])
