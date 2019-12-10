@@ -1,0 +1,110 @@
+'''
+Customer 
+Created by Noah Smith and Zach Cook 12/7/19.
+
+Usage of Program: 
+python3 Customer.py
+'''
+#Library Imports
+import sys
+import random
+import hashlib
+
+#Bank's Information 
+bankKeyN = 571
+
+#Customer's Personal Information:
+identity = 15
+personalInformation = "Alice Cash, 1234 Fake Rd, Howell MI 48843, SSN:102-25-9853"
+
+#Request The Number of Money Orders to Generated
+numOfMoneyOrders = int(input("How many money orders should be generated?: "))
+
+def main(): 
+    for i in range(numOfMoneyOrders): 
+        print("Computing Money Order: ", i + 1)
+        valueOfMoneyOrder = float(randomInt(1,500))
+                                                        #Round Value of MO to 2 decimal places 
+        uniquenessString = randomInt(100000,500000)
+                                                        #Add Logic to Not Have Duplicate Unique Strings - TBD later 
+        customerID = identity
+        #Base Money Order Complete
+        baseMoneyOrder = []
+        baseMoneyOrder.append(valueOfMoneyOrder)
+        baseMoneyOrder.append(uniquenessString)
+        baseMoneyOrder.append(identity)
+        #Output Base Money Order 
+        baseMOFileName = "BaseMO" + str(i+1) + ".txt"
+        writeFile(baseMOFileName,baseMoneyOrder)
+
+        #Secret Split MO Start
+        secretSplitMO = []
+        secretSplitMO.append(valueOfMoneyOrder)
+        secretSplitMO.append(uniquenessString)
+        #Secret Split Twice 
+        I11 = getSecretSplitting()  
+        I12 = getSecretSplitting() 
+        secretSplit = []
+        secretSplit.append(I11)
+        secretSplit.append(I12)
+        secretSplitMO.append(secretSplit)
+        #Output 
+        secretSplitMOFileName = "SecretSplitMO" + str(i+1) + ".txt"
+        writeFile(secretSplitMOFileName,secretSplitMO)
+
+
+def getSecretSplitting():
+    R = randomNumberwithLength(len(str(identity)))
+    S = R ^ identity
+    returnList = [R,S]
+    return(returnList)
+
+
+def bitCommitment():
+    R1 = random.randint(0,500)
+    R2 = random.randint(0,500)
+    to_string = str(customerID) + str(R1) + str(R2)
+    utf8str = bytes(to_string, encoding='utf-8')
+    hashstr = hashlib.sha256(utf8str).hexdigest()
+    intval = int(hashstr, 16) % N 
+
+    outFileName = "PRNG_BC" + inputFileName 
+    outFile = open(outFileName, "w")
+    outFile.write(R1)
+    outFile.write(R2)
+    outFile.close()
+    
+    outFileName = "BitCommitNums" + inputFileName 
+    outFile = open(outFileName, "w")
+    outFile.write(hashstr)
+    outFile.write(intval)
+    outFile.close()
+
+    #Text file (BitCommitMOn.txt) representing the bit-commited money order'''
+    outFileName = "BitCommitMO" + inputFileName 
+    outFile = open(outFileName, "w")
+    outFile.write(intval)
+    outFile.close()
+
+
+
+
+
+#Custom Methods for Easy Data Export
+def randomNumberwithLength(length):
+    lower = 10**(length-1)
+    upper = 10**length - 1
+    return random.randint(lower, upper)
+
+    
+def writeFile(fileName,outputList):  
+    outFile = open(fileName,"w")                 
+    for value in outputList:
+        outFile.write(str(value))
+    outFile.close()
+
+def randomInt(min,max):
+    randomNumber = random.randint(min,max)
+    return int(randomNumber)
+
+main()
