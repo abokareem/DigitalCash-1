@@ -183,6 +183,45 @@ def randomInt(min,max):
     randomNumber = random.randint(min,max)
     return int(randomNumber)
 
+###ADDED BY ZACH NEEDS REVIEW####
+def revealMO(): 
+###Variable Set in previous definition?
+    R111 = randomNumberwithLength(len(str(R11)))
+    R112 = randomNumberwithLength(len(str(R12)))
+    R121 = randomNumberwithLength(len(str(R11)))
+    R122 = randomNumberwithLength(len(str(R12)))
+    S111 = randomNumberwithLength(len(str(S11)))
+    S112 = randomNumberwithLength(len(str(S12)))
+    S121 = randomNumberwithLength(len(str(S11)))
+    S122 = randomNumberwithLength(len(str(S12)))
+###Provided by Alice
+'''
+R11,R111,R112
+S11,S111,S112
+R12,R121,R122
+S11,S121,S122
+'''
+###Bank Then Calculates/Verifies###
+    [(R11^R111^R112),R111]
+    [(S11^S111^S112),S111]     #Output give you the bank verifies, which should match BitCommitment
+    [(R12^R121^R122),R121]
+    [(S12^S121^S122),S121]
+
+def join():
+#This portion needs to match the original MO Amount, Uniqueness String, and Identity Strings
+
+R11^S11 = '''Identity, because we really only obfuscated the ID in this step'''
+
+
+
+
+
+
+
+
+
+
+
 #Request The Number of Money Orders to Generated
 identity = int(input("Please enter your ID: "))
 numOfMoneyOrders = int(input("How many money orders would you like to make today?: "))
