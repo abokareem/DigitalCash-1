@@ -11,6 +11,13 @@ import sys
 import random
 import hashlib
 
+
+class Customer(object):
+    def __init__(self, amount, identity, keys):
+        
+
+
+
 #Create Entie Money Order
 def createMO(valueOfMoneyOrder): 
     print("Computing Money Order: ", i + 1)
@@ -211,16 +218,6 @@ def join():
 #This portion needs to match the original MO Amount, Uniqueness String, and Identity Strings
 
 R11^S11 = '''Identity, because we really only obfuscated the ID in this step'''
-
-
-
-
-
-
-
-
-
-
 
 #Request The Number of Money Orders to Generated
 identity = int(input("Please enter your ID: "))
