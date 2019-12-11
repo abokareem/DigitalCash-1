@@ -121,17 +121,14 @@ class CustomerClass(object):
 #START OF CALLED CLASSES 
 
 def revealMO(MO,R11,R111,R112,S11,S111,S112,R12,R121,R122,S12,S121,S122):
-    VAR1 = [(R11^R111^R112),R111]
-    VAR2 = [(S11^S111^S112),S111]     #Output give you the bank verifies, which should match BitCommitment
-    VAR3 = [(R12^R121^R122),R121]
-    VAR4 = [(S12^S121^S122),S121]
+    VAR1 = [(R11^R111^R112)]
+    VAR2 = [(S11^S111^S112)]     #Output give you the bank verifies, which should match BitCommitment
+    VAR3 = [(R12^R121^R122)]
+    VAR4 = [(S12^S121^S122)]
     returnList = []
-    returnList.append(VAR1)
-    returnList.append(VAR2)
-    returnList.append(VAR3)
-    returnList.append(VAR4)
+    returnList.append([VAR1,VAR2])
+    returnList.append([VAR3,VAR4])
     return returnList
-
 '''
 Text file (BitCommitRevealMOn.txt) representing the revealed bit-commited money order
 '''
@@ -198,7 +195,7 @@ def performBitCommitment(I11,I12):
     I11R = [(R11^R111^R112),R111]
     I11S = [(S11^S111^S112),S111]
     I12R = [(R12^R121^R122),R121]
-    I12S = [(S12^S121^S122),S121]
+    I12S = [(S12^S121^S122),R121]
     outputValue = []
     outputValue.append(I11R)
     outputValue.append(I11S)
@@ -251,12 +248,3 @@ def join(R11,R12):
     R11^S11 = Identity, because we really only obfuscated the ID in this step
 
 '''
-
-
-#Questions
-'''
-Show how far we've come. 
-Where do we go next
-Can't reverse the bitcommitment
-'''
-
