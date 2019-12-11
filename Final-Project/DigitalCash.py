@@ -10,15 +10,13 @@ python3 DigitalCash.py
 import Customer
 import Bank
 
-
-
 identity = int(input("Please enter your ID: "))
 numOfMoneyOrders = int(input("How many money orders would you like to make today?: "))
 valueofMO = []
 
 #Start of Program
 Alice = Customer.CustomerClass(identity=identity)
-#Bob = Bank.bank()
+Bob = Bank.BankClass()
 
 
 

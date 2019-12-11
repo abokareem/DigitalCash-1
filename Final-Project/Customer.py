@@ -10,6 +10,7 @@ python3 Customer.py
 import sys
 import random
 import hashlib
+import pickle
 
 
 class CustomerClass(object):
@@ -19,9 +20,23 @@ class CustomerClass(object):
         
     #Create Entie Money Order
     def createMO(self, valueOfMoneyOrder, IDofMO): 
-        #Add Logic to Not Have Duplicate Unique Strings - TBD later !!!!!!!!!!!!!!!!!!!
+
+        IDList = []
+        with open ('usedIDs.txt', 'rb') as var:
+           IDList = pickle.load(var)
+        print(IDList)
         uniquenessString = randomInt(100,500)
-                                                        
+        while True:
+            if uniquenessString in IDList: 
+                uniquenessString = randomInt(100,500)
+            else: 
+                IDList.append(uniquenessString)
+                break
+            
+        #Save UIDs to usedIDs.txt                                                
+        with open('usedIDs.txt', 'wb') as var:
+            pickle.dump(IDList, var)
+
         customerID = self.identity
         #Base Money Order Complete
         baseMoneyOrder = []
