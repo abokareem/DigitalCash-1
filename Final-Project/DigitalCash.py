@@ -18,11 +18,11 @@ valueofMO = []
 Alice = Customer.CustomerClass(identity=identity)
 Bob = Bank.BankClass()
 
-
-
 for i in range(numOfMoneyOrders):
     inputVal = int(input("What is the value of the Money Order " + str((i+1)) + "?: "))
     valueofMO.append(inputVal)
 
 for i in range(numOfMoneyOrders):
     Alice.createMO(valueOfMoneyOrder=valueofMO[i],IDofMO=i)
+
+Bob.blindSignatureProtocol(1)
