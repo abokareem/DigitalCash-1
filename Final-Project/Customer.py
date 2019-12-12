@@ -1,10 +1,12 @@
 '''
 Customer 
-Created by Noah Smith and Zach Cook 12/7/19.
+Created by Noah Smith, Zach Cook and Chris Jansma 12/7/19.
 
-Usage of Program: 
-python3 Customer.py
 '''
+#Bank Keys
+bankKeyN = 571
+bankKeyD = 59 
+bankKeyE = 29
 
 #Library Imports
 import sys
@@ -12,16 +14,44 @@ import random
 import hashlib
 import pickle
 
-
+#Customer Class to be referenced by DigitalCash.py
 class CustomerClass(object):
     def __init__(self, identity):
         print("Customer oject has been created")
         self.identity = identity
         
-    #Create Entie Money Order
+    #Method to unblind Signed Money Orders
+    def unblindSignedMO(self, moneyOrder):
+        valueofMO = moneyOrder[0]
+        uniqueness = moneyOrder[1]
+        I11R = int(moneyOrder[2])
+        I11S = int(moneyOrder[3])
+        I12R = int(moneyOrder[4])
+        I12S = int(moneyOrder[5])
+        I21R = int(moneyOrder[6])
+        I21S = int(moneyOrder[7])
+        I22R = int(moneyOrder[8])
+        I22S = int(moneyOrder[9])
+
+        returnMO = []
+        returnMO.append(int(valueofMO) ** bankKeyE % bankKeyN)
+        returnMO.append(int(uniqueness) ** bankKeyE % bankKeyN)
+        returnMO.append(int(I11R) ** bankKeyE % bankKeyN)
+        returnMO.append(int(I11S) ** bankKeyE % bankKeyN)
+        returnMO.append(int(I12R) ** bankKeyE % bankKeyN)
+        returnMO.append(int(I12S) ** bankKeyE % bankKeyN)
+        returnMO.append(int(I21R) ** bankKeyE % bankKeyN)
+        returnMO.append(int(I21S) ** bankKeyE % bankKeyN)
+        returnMO.append(int(I22R) ** bankKeyE % bankKeyN)
+        returnMO.append(int(I22S) ** bankKeyE % bankKeyN)
+        return returnMO
+
+    #Method to Create a Money Order
     def createMO(self, valueOfMoneyOrder, IDofMO): 
+
+        #Validation that a new unique uniquenessString was generated
         IDList = []
-        with open ('usedIDs.txt', 'rb') as var:
+        with open ('custusedIDs.txt', 'rb') as var:
            IDList = pickle.load(var)
         uniquenessString = randomInt(100,500)
         while True:
@@ -32,16 +62,16 @@ class CustomerClass(object):
                 break
             
         #Save UIDs to usedIDs.txt                                                
-        with open('usedIDs.txt', 'wb') as var:
+        with open('custusedIDs.txt', 'wb') as var:
             pickle.dump(IDList, var)
 
+        #Start of new Base Money Order
         customerID = self.identity
-        #Base Money Order Complete
         baseMoneyOrder = []
         baseMoneyOrder.append(valueOfMoneyOrder)
         baseMoneyOrder.append(uniquenessString)
         baseMoneyOrder.append(self.identity)
-        #Output Base Money Order 
+        #Output Base Money Order to File
         baseMOFileName = "BaseMO" + str(IDofMO+1) + ".txt"
         writeFile(baseMOFileName,baseMoneyOrder)
 
@@ -49,7 +79,6 @@ class CustomerClass(object):
         secretSplitMO = []
         secretSplitMO.append(valueOfMoneyOrder)
         secretSplitMO.append(uniquenessString)
-        #Secret Split Twice 
         I11 = getSecretSplitting(self)  
         I12 = getSecretSplitting(self) 
         I21 = getSecretSplitting(self)
@@ -62,17 +91,17 @@ class CustomerClass(object):
         secretSplit.append([I11L,I11R])
         secretSplit.append([I12L,I12R])
         secretSplitMO.append(secretSplit)
-        #OutputSSMO 
+        #OutputSSMO to File
         secretSplitMOFileName = "SecretSplitMO" + str(IDofMO+1) + ".txt"
         writeFile(secretSplitMOFileName,secretSplitMO)
-        #OutputSSN
+        #OutputSSN to File
         secretSplitNumberMOFileName = "PRNG_SS" + str(IDofMO+1) + ".txt"
         writeFile(secretSplitNumberMOFileName,secretSplit)
 
         #Start of Bit Commitment
-        #PRNG_BCn.txt
         BCRawOutput = []
         BCRawOutput =performBitCommitment(I11,I12,I21,I22)
+        #Values Generated in BC
         BCOutput = BCRawOutput[0]
         #Random Numbers used in BC
         BCRANDNUMS = BCRawOutput[1]
@@ -92,6 +121,7 @@ class CustomerClass(object):
         S212 = BCRANDNUMS[13]
         S221 = BCRANDNUMS[14]
         S222 = BCRANDNUMS[15]
+        #Output PRNG Numbers
         randIntBCFileName = "PRNG_BC" + str(IDofMO+1) + ".txt"
         writeFile(randIntBCFileName,BCRANDNUMS)
 
@@ -111,7 +141,6 @@ class CustomerClass(object):
         BCNUMS.append([R12,I12R])
         BCNUMS.append([S12,I12S])
         writeFile(bitCommingNumsFileName,BCNUMS)   
-
 
         R21 = I21[0]
         S21 = I21[1]
@@ -157,7 +186,7 @@ class CustomerClass(object):
 
 
 
-#START OF CALLED CLASSES 
+#START OF CALLED CLASSES TO AID GENERATION OF FILES / NUMBERS 
 def joinMO(MO,R11,S11,valueOfMoneyOrder,uniquenessString):
    Identity = R11^S11 
    returnMO = []
@@ -166,8 +195,7 @@ def joinMO(MO,R11,S11,valueOfMoneyOrder,uniquenessString):
    returnMO.append(Identity)
    return returnMO
 
-
-
+#Method to Reveal a MO
 def revealMO(MO,R11,R111,R112,S11,S111,S112,R12,R121,R122,S12,S121,S122,I11R,I12R,I11S,I12S,valueOfMoneyOrder,uniquenessString):
     VAR1 = [(I11R[0]^R111^R112),(I11S[0]^S111^S112)]
     VAR3 = [(I12R[0]^R121^R122),(I12S[0]^S121^S122)]
@@ -178,14 +206,10 @@ def revealMO(MO,R11,R111,R112,S11,S111,S112,R12,R121,R122,S12,S121,S122,I11R,I12
     returnList.append(VAR3)
     return returnList
 
-'''
-Text file (BitCommitRevealMOn.txt) representing the revealed bit-commited money order
-'''
 
+#Method to Unblind an MO
 def unblindMO(MO):
     #BANK RSA KEY
-    bankKeyN = 571
-    bankKeyD = 59 
     unblindedMO = []
     #Value
     unblindedMO.append(int(MO[0]) ** bankKeyD % bankKeyN) #Ciphertext number, does output have to be Characters?
@@ -209,6 +233,7 @@ def unblindMO(MO):
     unblindedMO.append(int(MO[9]) ** bankKeyD % bankKeyN)
     return unblindedMO
 
+#Method to Blind an MO
 def blindMO(MO):
     #BANK PUBLIC RSA KEY
     bankKeyE = 29
@@ -226,18 +251,17 @@ def blindMO(MO):
     blindedMO.append(int(MO[4]) ** bankKeyE % bankKeyN)
     #I12S
     blindedMO.append(int(MO[5]) ** bankKeyE % bankKeyN)
-
+    #I21R
     blindedMO.append(int(MO[6]) ** bankKeyE % bankKeyN)
-
+    #I21S
     blindedMO.append(int(MO[7]) ** bankKeyE % bankKeyN)
-
+    #I22R
     blindedMO.append(int(MO[8]) ** bankKeyE % bankKeyN)
-
+    #I22S
     blindedMO.append(int(MO[9]) ** bankKeyE % bankKeyN)
-
     return blindedMO
 
-
+#Method to Perform Bit Commitment
 def performBitCommitment(I11,I12,I21,I22):
     #0=R    1=S
     R11 = I11[0]
@@ -259,7 +283,6 @@ def performBitCommitment(I11,I12,I21,I22):
     S112 = randomNumberwithLength(len(str(S12)))
     S121 = randomNumberwithLength(len(str(S11)))
     S122 = randomNumberwithLength(len(str(S12)))
-
     R211 = randomNumberwithLength(len(str(R11)))
     R212 = randomNumberwithLength(len(str(R12)))
     S211 = randomNumberwithLength(len(str(R11)))
@@ -292,7 +315,6 @@ def performBitCommitment(I11,I12,I21,I22):
     outputValue.append(I22R)
     outputValue.append(I22S)
 
-
     outputValue2 = []
     outputValue2.append(R111)
     outputValue2.append(R112)
@@ -318,6 +340,7 @@ def performBitCommitment(I11,I12,I21,I22):
 
     return returnValue
 
+#Method to Perform Secret Splitting
 def getSecretSplitting(self):
     R = randomNumberwithLength(len(str(self.identity)))
     S = R ^ self.identity
@@ -330,20 +353,14 @@ def randomNumberwithLength(length):
     upper = 10**length - 1
     return random.randint(lower, upper)
         
+#Method to Write Lists to New FIle Lines
 def writeFile(fileName,outputList):  
     outFile = open(fileName,"w")                 
     for value in outputList:
         outFile.write(str(value)+ '\n')
     outFile.close()
 
+#Method to Create Ints between two numbers easily
 def randomInt(min,max):
     randomNumber = random.randint(min,max)
     return int(randomNumber)
-
-
-'''
-Questions:
-Text file (BitCommitNumsn.txt) containing the (two pseudo-random integers, actual value)  used in the bit commitment protocol. WHAT ARE THE NUMBERS
-
-
-'''
