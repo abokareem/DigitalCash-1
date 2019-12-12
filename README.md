@@ -42,11 +42,11 @@ UnblindedMOn.txt representing the unblinded money order
 
 BitCommitRevealMOn.txt representing the revealed bit-committed money order
 
-SecretJoinMOn.txt representing the joined money order.
+--- SecretJoinMOn.txt representing the joined money order.
 
 SignedUnblindedMOn.txt representing the signed unblinded money order
 
-UsedMOn.txt with revealed halves of the identity string.
+--- UsedMOn.txt with revealed halves of the identity string.
 
 SignedBlindedMOn.txt representing the signed blinded money order.
 
