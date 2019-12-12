@@ -9,6 +9,7 @@ To implement a protocol for the use of electronic cash using various protocols f
 Download this repository:
 ```bash
 git clone https://github.com/nsmith76/DigitalCash
+cd DigitalCash/Final-Project/
 ```
 
 ## Usage Input
