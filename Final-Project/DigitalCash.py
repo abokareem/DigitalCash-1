@@ -60,3 +60,6 @@ else:
     print("Failure! The signature is NOT valid.")
 
 print(Bob.validateUID(unblindSignedMO[1]))
+
+nbitval = Merchant.generatenBitValue()
+Alice.revealIdentityStrings(nbitValue=nbitval,MONUM=randomMO)

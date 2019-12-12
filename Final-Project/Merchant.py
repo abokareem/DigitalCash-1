@@ -3,6 +3,10 @@ Merchant
 Created by Noah Smith, Zach Cook and Chris Jansma 12/7/19.
 '''
 
+#Library Imports
+import random 
+
+#Bank Keys
 bankKeyE = 29
 bankKeyN = 571
 bankKeyD = 59
@@ -11,6 +15,11 @@ bankKeyD = 59
 class MerchantClass(object):
     def __init__(self):
         print("Merchant oject has been created")
+        
+    #Method to Generate n-bit value
+    def generatenBitValue(self):
+        value = random.randint(0,1)
+        return value
 
     #Method for Merchant to Unblined the Signed Money Order
     def unblindSignedMO(self, MO):
