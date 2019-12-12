@@ -44,18 +44,7 @@ class CustomerClass(object):
         elif nbitValue == 1: 
             #Need to Obtain Right Half (I12S)
             I12S
-'''       
-def revealMO(MO,R11,R111,R112,S11,S111,S112,R12,R121,R122,S12,S121,S122,I11R,I12R,I11S,I12S,valueOfMoneyOrder,uniquenessString):
-    VAR1 = [(I11R[0]^R111^R112),(I11S[0]^S111^S112)]
-    VAR3 = [(I12R[0]^R121^R122),(I12S[0]^S121^S122)]
-    returnList = []
-    returnList.append(valueOfMoneyOrder)
-    returnList.append(uniquenessString)
-    returnList.append(VAR1)
-    returnList.append(VAR3)
-    return returnList
 
-'''
     #Method to unblind Signed Money Orders
     def unblindSignedMO(self, moneyOrder):
         valueofMO = moneyOrder[0]
