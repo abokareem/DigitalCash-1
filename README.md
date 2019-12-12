@@ -42,7 +42,7 @@ UnblindedMOn.txt representing the unblinded money order
 
 BitCommitRevealMOn.txt representing the revealed bit-committed money order
 
---- SecretJoinMOn.txt representing the joined money order.
+SecretJoinMOn.txt representing the joined money order.
 
 SignedUnblindedMOn.txt representing the signed unblinded money order
 
@@ -58,6 +58,10 @@ Message displaying if the money order has been used before or not.
 
 Message displaying if the bank’s signature is valid or not.
 
+### Known Limitations 
+Money order value's cannot be larger than 571. 
+Program can only have 571 runs before reduplication of unique money order IDs. 
+The money order value can only be a whole dollar amount, no decimal. 
 
 ## License
 [MIT]https://choosealicense.com/licenses/mit/
